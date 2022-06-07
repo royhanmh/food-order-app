@@ -185,15 +185,15 @@ app.delete("/food/delete/:id", async (req, res) => {
 
 // Login
 app.post("/login", async (req, res) => {
-  await userModel.findOne({username: req.body.name}).then( (err, result) => {
-    if (result) {
-      if (req.body.password === result.password) {
+  await userModel.findOne({username: req.body.username}).then( (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      if (result) {
         res.send(result);
       } else {
-        res.send("Wrong Password!")
+        res.send("User Not Found!")
       }
-    } else {
-      res.send(req.body)
     }
   })
 })

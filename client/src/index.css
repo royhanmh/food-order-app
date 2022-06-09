@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .modal { @apply w-full h-full fixed z-20 left-0 top-0 overflow-auto bg-[#00000066] }
+    .modal-content { @apply bg-white border border-black w-[40%] p-8 rounded-md }
+    .modal-header { @apply flex justify-between border-b border-b-black }
+    .modal-body { @apply border-b border-b-black my-3 }
+}

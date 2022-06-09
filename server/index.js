@@ -9,6 +9,7 @@ const userModel = require("./models/User");
 const foodModel = require("./models/Food");
 
 const multer = require("multer");
+const path = require('path');
 
 app.use(express.json());
 app.use(cors());
@@ -98,9 +99,11 @@ app.delete("/order/delete/:id", async (req, res) => {
 });
 
 // Food
+const imagePath = path.join(`${__dirname}/images`)
+
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./images");
+    cb(null, "/images");
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -109,26 +112,18 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: fileStorageEngine });
 app.post("/food/insert", upload.single("foodImage"), async (req, res) => {
-  name = req.body.foodName;
-  category = req.body.foodCategory;
-  description = req.body.foodDescription;
-  price = req.body.foodPrice;
-  image = req.file.originalname;
-
   const food = new foodModel({
-    foodName: name,
-    foodCategory: category,
-    foodDescription: description,
-    foodPrice: price,
-    foodImage: image,
+    foodName: req.body.foodName,
+    foodCategory: req.body.foodCategory,
+    foodDescription: req.body.foodDescription,
+    foodPrice: req.body.foodPrice,
+    foodImage: req.body.foodImage,
   });
 
-  try {
-    await food.save();
-    res.send("inserted data");
-  } catch (err) {
-    console.log(err);
-  }
+  food
+  .save()
+  .then(() => res.json("Inserted Data"))
+  .catch((err) => res.status(400).json(`Error: ${err}`))
 });
 
 app.get("/food", async (req, res) => {
@@ -141,7 +136,7 @@ app.get("/food", async (req, res) => {
   });
 });
 
-app.use("/images", express.static("images"));
+app.use(express.static(__dirname));
 
 app.get("/food/:id", async (req, res) => {
   foodModel.findById(req.params.id, (err, result) => {

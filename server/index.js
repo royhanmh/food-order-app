@@ -61,6 +61,7 @@ app.get("/order/:id", async (req, res) => {
 
 app.put("/order/update/:id", async (req, res) => {
   id = req.params.id;
+  newFoodId = req.body.newFoodId;
   newAmount = req.body.newAmount;
   newName = req.body.newCustName;
   newOrderDate = new Date();

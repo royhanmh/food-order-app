@@ -5,6 +5,11 @@ const app = express();
 
 const connectDB = require("./database/connection");
 const orderModel = require("./models/Order");
+const userModel = require("./models/User");
+const foodModel = require("./models/Food");
+
+const multer = require("multer");
+const path = require('path');
 
 app.use(express.json());
 app.use(cors());
@@ -93,6 +98,102 @@ app.delete("/order/delete/:id", async (req, res) => {
   res.send("deleted");
 });
 
-app.listen(3002, () => {
-  console.log("Server is running on http://localhost:3002");
+// Food
+const imagePath = path.join(`${__dirname}/images`)
+
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "/images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: fileStorageEngine });
+app.post("/food/insert", upload.single("foodImage"), async (req, res) => {
+  const food = new foodModel({
+    foodName: req.body.foodName,
+    foodCategory: req.body.foodCategory,
+    foodDescription: req.body.foodDescription,
+    foodPrice: req.body.foodPrice,
+    foodImage: req.body.foodImage,
+  });
+
+  food
+  .save()
+  .then(() => res.json("Inserted Data"))
+  .catch((err) => res.status(400).json(`Error: ${err}`))
+});
+
+app.get("/food", async (req, res) => {
+  foodModel.find({}, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+
+    res.send(result);
+  });
+});
+
+app.use(express.static(__dirname));
+
+app.get("/food/:id", async (req, res) => {
+  foodModel.findById(req.params.id, (err, result) => {
+    if (err) {
+      return res.send(err);
+    }
+    return res.send(result);
+  });
+});
+
+app.put("/food/update", async (req, res) => {
+  newFoodName = req.body.newFoodName;
+  newFoodCategory = req.body.newFoodCategory;
+  newFoodDescription = req.body.newFoodDescription;
+  newFoodPrice = req.body.newFoodPrice;
+  newFoodImage = req.body.newFoodImage;
+  id = req.body.id;
+
+  var imageName = newFoodImage.replace(/^.*[\\\/]/, "");
+
+  try {
+    await foodModel.findById(id, (err, updatedFood) => {
+      updatedFood.foodName = newFoodName;
+      updatedFood.foodCategory = newFoodCategory;
+      updatedFood.foodDescription = newFoodDescription;
+      updatedFood.foodPrice = newFoodPrice;
+      updatedFood.foodImage = imageName;
+      updatedFood.save();
+      res.send("update");
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.delete("/food/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  await foodModel.findByIdAndRemove(id).exec();
+  res.send("deleted");
+});
+
+// Login
+app.post("/login", async (req, res) => {
+  await userModel.findOne({username: req.body.username}).then( (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      if (result) {
+        res.send(result);
+      } else {
+        res.send("User Not Found!")
+      }
+    }
+  })
+})
+
+
+app.listen(3001, () => {
+  console.log("Server is running on http://localhost:3001");
 });

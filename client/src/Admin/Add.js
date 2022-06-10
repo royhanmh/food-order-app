@@ -1,5 +1,6 @@
 import Axios from "axios";
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 function Add() {
   const [foodName, setFoodName] = useState("");
@@ -7,8 +8,10 @@ function Add() {
   const [foodDescription, setFoodDescription] = useState("");
   const [foodPrice, setFoodPrice] = useState(0);
   const [foodImage, setFoodImage] = useState("");
+  const nav = useNavigate();
 
-  const addToList = () => {
+  const addToList = (e) => {
+    e.preventDefault();
     Axios.post("http://localhost:3001/food/insert", {
       foodName: foodName,
       foodCategory: foodCategory,
@@ -16,9 +19,8 @@ function Add() {
       foodPrice: foodPrice,
       foodImage: foodImage,
     }).then((response) => {
-      alert("Data Added");
-      window.open("../admin/food", "_self");
-    });
+      console.log(response)
+    }).catch(err => console.log(err));
   };
 
   return (
@@ -28,12 +30,14 @@ function Add() {
           <h3 class="text-2xl font-bold text-center">Add Food Data</h3>
 
           <div class="mt-4">
+            <form onSubmit={(e) => addToList(e)} encType='multipart/form-data' method="post">
             <div>
               <label class="block" for="Name">
                 Name
               </label>
               <input
                 type="text"
+                name="foodName"
                 placeholder="Product Name"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(event) => {
@@ -44,6 +48,7 @@ function Add() {
             <div class="mt-4">
               <label class="block">Category</label>
               <select
+                name="foodCategory"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(event) => {
                   setFoodCategory(event.target.value);
@@ -58,6 +63,7 @@ function Add() {
             <div class="mt-4">
               <label class="block">Description</label>
               <input
+              name="foodDescription"
                 type="text"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(event) => {
@@ -68,6 +74,7 @@ function Add() {
             <div class="mt-4">
               <label class="block">Price</label>
               <input
+              name="foodPrice"
                 type="number"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(event) => {
@@ -79,20 +86,21 @@ function Add() {
               <label class="block">Image</label>
               <input
                 type="file"
+                name="foodImage"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 onChange={(event) => {
-                  setFoodImage(event.target.value);
+                  setFoodImage(event.target.files[0].name);
                 }}
               ></input>
             </div>
             <div class="flex items-baseline justify-between">
               <button
                 class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-                onClick={addToList}
               >
                 Add
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>

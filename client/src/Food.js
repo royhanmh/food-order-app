@@ -29,7 +29,7 @@ const Product = () => {
         <div className="basis-1/3">
           <h1 className="text-bold text-[35px]">{food.foodName}</h1>
           <a
-            href="products"
+            href="/foods"
             className="text-gray-600 hover:text-blue-500 text-left"
           >
             Back to catalog

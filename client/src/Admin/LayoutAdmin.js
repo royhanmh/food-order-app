@@ -12,19 +12,18 @@ const LayoutAdmin = () => {
             <ul>
               <li>
                 <a
-                  class="flex items-center px-4 py-2 text-gray-700 bg-gray-100 rounded-md "
+                  class="flex items-center px-4 py-2 mt-5 text-gray-600 rounded-md hover:bg-gray-200"
                   href="../admin/food"
                 >
                   <span class="mx-4 font-medium">Food List</span>
                 </a>
               </li>
-
               <li>
                 <a
                   class="flex items-center px-4 py-2 mt-5 text-gray-600 rounded-md hover:bg-gray-200"
-                  href="#"
+                  href="../admin/order"
                 >
-                  <span class="mx-4 font-medium">Settings</span>
+                  <span class="mx-4 font-medium">Order List</span>
                 </a>
               </li>
             </ul>

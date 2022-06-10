@@ -12,6 +12,7 @@ import AdminLayout from "./Admin/LayoutAdmin";
 import Dashboard from "./Admin/Dashboard";
 import Food from "./Food";
 import API from "./API";
+import Order from "./Admin/Order";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="food" element={<FoodData />} />
+          <Route path="order" element={<Order/>}/>
           <Route path="add" element={<Add />} />
           <Route path="update" element={<Update />} />
         </Route>
